@@ -69,7 +69,7 @@ def build_data(id,task,path,type,answer,label,sag_image):
         "task":task,
         "image":path,
         "object":label
-    } 
+    }
     answer_format=""
     if task !="positioning":
         answer_format=label_map[task][answer]
@@ -187,8 +187,10 @@ def main():
             train_box = json.load(f)
         with open(args.test_box, 'r') as f:
             test_box = json.load(f)
-    train_images_path=args.train_images_path
-    test_images_path=args.test_images_path
+    train_path=args.train_images_path
+    train_images_path = os.path.abspath(train_path)
+    test_path=args.test_images_path
+    test_images_path = os.path.abspath(test_path)
     sag_image=args.sag_image
     type_dataset = args.type_dataset
     output_folder = args.output_folder
@@ -197,14 +199,21 @@ def main():
     for task in task_type:
         if task !="positioning":
             if sag_type== "seperate":
-                if type_dataset !="test":
+                if type_dataset =="train" or type_dataset =="both":
                     train_data=[]
                     output_path = os.path.join(output_folder, f"{task}_train{'_' + suffix if suffix else ''}.json")
                     for sag in sag_image:
                         train_data.extend(build_dataset(task,train_images_path,train_label_data,output_folder,"train",[sag],sag_type,suffix))
                     with open(output_path,'w') as json_file:
-                        json.dump(train_data, json_file, ensure_ascii=False, indent=4)    
-                if type_dataset !="train":
+                        json.dump(train_data, json_file, ensure_ascii=False, indent=4)  
+                if type_dataset =="dev" or type_dataset =="both":
+                    test_data=[]
+                    output_path = os.path.join(output_folder, f"{task}_dev{'_' + suffix if suffix else ''}.json")
+                    for sag in sag_image:
+                        test_data.extend(build_dataset(task,test_images_path,test_label_data,output_folder,"dev",[sag],sag_type,suffix))
+                    with open(output_path,'w') as json_file:
+                        json.dump(test_data, json_file, ensure_ascii=False, indent=4)    
+                if type_dataset =="test":
                     test_data=[]
                     output_path = os.path.join(output_folder, f"{task}_test{'_' + suffix if suffix else ''}.json")
                     for sag in sag_image:
@@ -212,16 +221,18 @@ def main():
                     with open(output_path,'w') as json_file:
                         json.dump(test_data, json_file, ensure_ascii=False, indent=4)    
             else:
-                if type_dataset !="test":
+                if type_dataset =="train" or type_dataset =="both":
                     build_dataset(task,train_images_path,train_label_data,output_folder,"train",sag_image,sag_type,suffix)
-                if type_dataset !="train":
+                if type_dataset =="dev" or type_dataset =="both":
+                    build_dataset(task,test_images_path,test_label_data,output_folder,"dev",sag_image,sag_type,suffix)
+                if type_dataset =="test":
                     build_dataset(task,test_images_path,test_label_data,output_folder,"test",sag_image,sag_type,suffix)
             
         else:
-            if type_dataset !="test":
+            if type_dataset !="dev":
                 build_dataset(task,train_images_path,train_box,output_folder,"train",sag_image,"",suffix)
             if type_dataset !="train":
-                build_dataset(task,test_images_path,test_box,output_folder,"test",sag_image,"",suffix)
+                build_dataset(task,test_images_path,test_box,output_folder,"dev",sag_image,"",suffix)
 
 if __name__ == "__main__":
     main()
