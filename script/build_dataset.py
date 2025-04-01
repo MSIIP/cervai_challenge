@@ -28,10 +28,10 @@ label_map={
         3:"D.extrusion"
     },
     "zyzg":{
-        0:"normal",
-        1:"mild stenosis",
-        2:"moderate stenosis",
-        3:"severe stenosis"
+        0:"A.normal",
+        1:"B.mild stenosis",
+        2:"C.moderate stenosis",
+        3:"D.severe stenosis"
     }
 }
 #bbox_pattern用于匹配提供的bounding box格式
