@@ -86,7 +86,7 @@ python build_dataset.py \
     --sag_image "[5,6,7]" \
     --sag_type "seperate" \
     --suffix "" \
-    --type_dataset "both"
+    --type_dataset "train"
 ```
 
 椎间盘膨突和中央椎管任务数据较多，可以只用正中一张图片构建数据
@@ -104,10 +104,28 @@ python build_dataset.py \
     --sag_image "[6]" \
     --sag_type "" \
     --suffix "" \
-    --type_dataset "both"
+    --type_dataset "train"
 ```
 
-（3）构建测试集
+（3）构建开发集
+
+```
+python build_dataset.py \
+    --task_type '["qd","sl","zjppt","zyzg"]' \
+    --train_images_path "../data/mri_images/train" \
+    --test_images_path "../data/mri_images/train" \
+    --train_label_path "../data/train_label.json" \
+    --test_label_path "../data/dev_label.json" \
+    --train_box "../data/train_box.json" \
+    --test_box "../data/dev_box.json" \
+    --output_folder "../data/dataset" \
+    --sag_image "[6]" \
+    --sag_type "" \
+    --suffix "" \
+    --type_dataset "dev"
+```
+
+（4）构建测试集
 
 这里简单使用矢状位正中一张图片
 
